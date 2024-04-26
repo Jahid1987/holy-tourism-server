@@ -28,6 +28,7 @@ async function run() {
     // Get the database and collection on which to run the operation
     const database = client.db("tourismDB");
     const spotsCollection = database.collection("spots");
+    const countryCollection = database.collection("countries");
     const usersCollection = database.collection("users");
 
     // reading all spots
@@ -57,7 +58,12 @@ async function run() {
     app.delete("/spots/:id", async (req, res) => {
       res.send("deleting spot");
     });
-
+    // reading all countries
+    app.get("/countries", async (req, res) => {
+      const result = countryCollection.find();
+      const countries = await result.toArray();
+      res.send(countries);
+    });
     // reading users
     app.get("/users", async (req, res) => {
       const result = usersCollection.find();
