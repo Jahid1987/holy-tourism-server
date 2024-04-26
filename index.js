@@ -1,4 +1,4 @@
-const { MongoClient, ServerApiVersion } = require("mongodb");
+const { MongoClient, ServerApiVersion, ObjectId } = require("mongodb");
 const express = require("express");
 require("dotenv").config();
 const cors = require("cors");
@@ -27,7 +27,36 @@ async function run() {
 
     // Get the database and collection on which to run the operation
     const database = client.db("tourismDB");
+    const spotsCollection = database.collection("spots");
     const usersCollection = database.collection("users");
+
+    // reading all spots
+    app.get("/spots", async (req, res) => {
+      const result = spotsCollection.find();
+      const spots = await result.toArray();
+      res.send(spots);
+    });
+    // reading single spot
+    app.get("/spots/:id", async (req, res) => {
+      const query = { _id: new ObjectId(req.params.id) };
+
+      const result = await spotsCollection.findOne(query);
+      res.send(result);
+    });
+    // creating spots
+    app.post("/spots", async (req, res) => {
+      const newSpot = req.body;
+      const result = await spotsCollection.insertOne(newSpot);
+      res.send(result);
+    });
+    //updating spot
+    app.put("/spots/:id", async (req, res) => {
+      res.send("updating spot");
+    });
+    // deleting spot
+    app.delete("/spots/:id", async (req, res) => {
+      res.send("deleting spot");
+    });
 
     // reading users
     app.get("/users", async (req, res) => {
@@ -41,7 +70,9 @@ async function run() {
   }
 }
 run().catch(console.dir);
-
+app.get("/", (req, res) => {
+  res.send("server is running..");
+});
 app.listen(port, () => {
   console.log(`Example app listening on port ${port}`);
 });
