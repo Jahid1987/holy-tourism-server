@@ -58,11 +58,27 @@ async function run() {
     app.delete("/spots/:id", async (req, res) => {
       res.send("deleting spot");
     });
+    app.get("/lists/:email", async (req, res) => {
+      const query = {
+        user_email: req.params.email,
+      };
+      // const result = spotsCollection.find(query).sort({ average_cost: 1 });
+      const result = spotsCollection.find(query);
+      const listedSpots = await result.toArray();
+      res.send(listedSpots);
+    });
     // reading all countries
     app.get("/countries", async (req, res) => {
       const result = countryCollection.find();
       const countries = await result.toArray();
       res.send(countries);
+    });
+    // reading single country
+    app.get("/countries/:countryName", async (req, res) => {
+      const query = { name: req.params.countryName };
+
+      const result = await countryCollection.findOne(query);
+      res.send(result);
     });
     // reading users
     app.get("/users", async (req, res) => {
@@ -76,7 +92,7 @@ async function run() {
   }
 }
 run().catch(console.dir);
-app.get("/", (req, res) => {
+app.get("/", async (req, res) => {
   res.send("server is running..");
 });
 app.listen(port, () => {
