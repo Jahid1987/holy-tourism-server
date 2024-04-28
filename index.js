@@ -56,8 +56,11 @@ async function run() {
     });
     // deleting spot
     app.delete("/spots/:id", async (req, res) => {
-      res.send("deleting spot");
+      const query = { _id: new ObjectId(req.params.id) };
+      const result = await spotsCollection.deleteOne(query);
+      res.send(result);
     });
+    // finding lists by user email
     app.get("/lists/:email", async (req, res) => {
       const query = {
         user_email: req.params.email,
