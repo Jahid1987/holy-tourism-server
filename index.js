@@ -52,7 +52,25 @@ async function run() {
     });
     //updating spot
     app.put("/spots/:id", async (req, res) => {
-      res.send("updating spot");
+      const updatedData = req.body;
+      const filter = { _id: new ObjectId(req.params.id) };
+      const updatedSpot = {
+        $set: {
+          tourist_spot_name: updatedData.tourist_spot_name,
+          average_cost: updatedData.average_cost,
+          location: updatedData.location,
+          seasonality: updatedData.seasonality,
+          country_name: updatedData.country_name,
+          short_description: updatedData.short_description,
+          image: updatedData.image,
+          travel_time: updatedData.travel_time,
+          total_visitors_per_year: updatedData.total_visitors_per_year,
+          country_flag: updatedData.country_flag,
+        },
+      };
+      const result = await spotsCollection.updateOne(filter, updatedSpot);
+
+      res.send(result);
     });
     // deleting spot
     app.delete("/spots/:id", async (req, res) => {
