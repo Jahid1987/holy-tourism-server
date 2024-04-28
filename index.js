@@ -33,7 +33,7 @@ async function run() {
 
     // reading all spots
     app.get("/spots", async (req, res) => {
-      const result = spotsCollection.find();
+      const result = spotsCollection.find().sort({ ...req.query });
       const spots = await result.toArray();
       res.send(spots);
     });
@@ -83,7 +83,7 @@ async function run() {
       const query = {
         user_email: req.params.email,
       };
-      // const result = spotsCollection.find(query).sort({ average_cost: 1 });
+
       const result = spotsCollection.find(query);
       const listedSpots = await result.toArray();
       res.send(listedSpots);
