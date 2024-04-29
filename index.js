@@ -99,6 +99,14 @@ async function run() {
       const query = { name: req.params.countryName };
 
       const result = await countryCollection.findOne(query);
+
+      res.send(result);
+    });
+    // reading countrywise spots
+    app.get("/countrywisespots/:country", async (req, res) => {
+      const query = { country_name: req.params.country };
+      const cursor = spotsCollection.find(query);
+      const result = await cursor.toArray();
       res.send(result);
     });
     // reading users
