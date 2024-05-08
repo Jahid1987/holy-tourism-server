@@ -31,6 +31,27 @@ async function run() {
     const countryCollection = database.collection("countries");
     const usersCollection = database.collection("users");
 
+    // testing paginations stats
+    app.get("/productbypaginate", async (req, res) => {
+      const query = req.query;
+      const page = parseInt(query.page);
+      const size = parseInt(query.size);
+
+      const result = await spotsCollection
+        .find()
+        .skip(page * size)
+        .limit(size)
+        .toArray();
+      res.send(result);
+    });
+
+    // reading the amount of product
+    app.get("/productcount", async (req, res) => {
+      const count = await spotsCollection.estimatedDocumentCount();
+      res.send({ count });
+    });
+    // pagination testing end
+
     // reading all spots
     app.get("/spots", async (req, res) => {
       const result = spotsCollection.find().sort({ ...req.query });
